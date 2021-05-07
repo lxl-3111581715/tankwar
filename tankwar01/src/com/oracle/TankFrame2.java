@@ -10,6 +10,7 @@ import java.awt.event.WindowEvent;
 public class TankFrame2 extends Frame {
     //    主站坦克
     Tank myTank = new Tank(200, 200, Dir.DOWN);
+    Bullet b = new Bullet(300,300,Dir.DOWN);
 
     //    构造方法
     public TankFrame2() {
@@ -115,6 +116,9 @@ public class TankFrame2 extends Frame {
     //    窗口重新调用的时候自动调用 paint 方法 重写方法 paint
     @Override
     public void paint(Graphics g) {
+//      画坦克
         myTank.paint(g);
+//      画子弹
+        b.paint(g);
     }
 }
