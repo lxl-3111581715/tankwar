@@ -25,8 +25,9 @@ public class TankFrame2 extends Frame {
     //    窗口的大小
     int GAME_WIDTH = 800, GAME_HEIGHT = 600;
     //    主站坦克
-    Tank myTank = new Tank(200, 200, Dir.DOWN, this);
+    Tank myTank = new Tank(200, 400, Dir.DOWN, this);
     ArrayList<Bullet> bullets = new ArrayList<>();
+    ArrayList<Tank> tanks = new ArrayList<>(); // 创建敌方坦克
 
     //    Bullet b = new Bullet(300, 300, Dir.DOWN);
     //    构造方法
@@ -154,6 +155,10 @@ public class TankFrame2 extends Frame {
 //        } // 出现异常
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).paint(g);
+        }
+//        画地方坦克
+        for (int i = 0; i < tanks.size(); i++) {
+            tanks.get(i).paint(g);
         }
     }
 
