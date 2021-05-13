@@ -1,6 +1,7 @@
 package com.oracle;
 
 import java.awt.*;
+import java.sql.Struct;
 
 // 坦克类
 /*
@@ -11,10 +12,29 @@ import java.awt.*;
  *
  * */
 public class Tank {
-    private int x, y;
+    private  boolean living = true;
+    private int x;
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    private int y;
     private Dir dir = Dir.DOWN;
     private static final int SPEED = 5;
-    private static final int WIDTH = 50, HEIGHT = 50;
+    public static final int WIDTH = ResourceManager.tankU.getWidth(), HEIGHT = ResourceManager.tankU.getHeight();
     //    坦克类持有子弹类的引用
     private TankFrame2 tankframe2 = null;
     private boolean moving = false;
@@ -45,6 +65,7 @@ public class Tank {
 
     // 画坦克的方法
     public void paint(Graphics g) {
+        if(! living) tankframe2.tanks.remove(this);
 //        Color c = g.getColor();
 //        g.setColor(Color.yellow);
 //        g.fillRect(x, y, WIDTH, HEIGHT);
@@ -92,5 +113,9 @@ public class Tank {
     // 抬起ctrl键发射一个子弹
     public void fire() {
         tankframe2.bullets.add(new Bullet(this.x, this.y, this.dir, this.tankframe2));
+    }
+
+    public void die() {
+        this.living = false;
     }
 }

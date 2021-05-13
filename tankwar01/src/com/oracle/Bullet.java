@@ -15,7 +15,7 @@ public class Bullet {
     private int x, y;
     private Dir dir;
     //    子弹是否存活的属性
-    private boolean alive = true;
+    private boolean living = true;
     private TankFrame2 tankframe2 = null;
 
     public Bullet(int x, int y, Dir dir, TankFrame2 tankframe2) {
@@ -51,7 +51,7 @@ public class Bullet {
 
     // 画子弹的方法
     public void paint(Graphics g) {
-        if (!alive) {
+        if (!living) {
             tankframe2.bullets.remove(this);
         }
 //        Color c = g.getColor();
@@ -94,7 +94,24 @@ public class Bullet {
                 break;
         }
         if (x < 0 || y < 0 || x > tankframe2.GAME_WIDTH || y > tankframe2.GAME_HEIGHT) {
-            alive = false;
+            living = false;
         }
+    }
+//    坦克和子弹的碰撞检测方法
+    public void collwith(Tank tank) {
+//        Rectangle 辅助类
+        Rectangle rect1 = new Rectangle(this.x ,this.y,WIDTH,HEIGHT);
+//
+        Rectangle rect2 = new Rectangle(tank.getX(),tank.getY(),tank.WIDTH,tank.HEIGHT);
+//        判断俩个方块是否相交
+        if(rect1.intersects(rect2)){
+            tank.die();
+            this.die();
+        }
+
+    }
+
+    private void die() {
+        this.living = false;
     }
 }
