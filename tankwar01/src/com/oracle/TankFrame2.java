@@ -5,17 +5,34 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 // 显示窗口的第二种方法
+/*
+ * 窗口的属性
+ *   大小
+ *   能否改变
+ *   标题
+ *   是否可关闭
+ * 键盘按下
+ * 键盘松开
+ * 窗口画东西
+ *   出现坦克
+ *   出现子弹
+ *   按下ctrl键 打出子弹
+ * */
 public class TankFrame2 extends Frame {
+    //    窗口的大小
+    int GAME_WIDTH = 800, GAME_HEIGHT = 600;
     //    主站坦克
-    Tank myTank = new Tank(200, 200, Dir.DOWN);
-    Bullet b = new Bullet(300,300,Dir.DOWN);
+    Tank myTank = new Tank(200, 200, Dir.DOWN, this);
+    ArrayList<Bullet> bullets = new ArrayList<>();
 
+    //    Bullet b = new Bullet(300, 300, Dir.DOWN);
     //    构造方法
     public TankFrame2() {
 //      窗口设置大小
-        setSize(800, 600);
+        setSize(GAME_WIDTH, GAME_HEIGHT);
 //      设置不能改变大小
         setResizable(false);
 //      设置窗口的标题
@@ -44,9 +61,7 @@ public class TankFrame2 extends Frame {
         // 一个键被按下去的时候调用
         @Override
         public void keyPressed(KeyEvent e) {
-            System.out.println("keyPressed");
             int key = e.getKeyCode();
-            System.out.println("看看我按了啥键===》" + key);
             switch (key) {
                 case KeyEvent.VK_UP: // 上
                     BU = true;
@@ -64,40 +79,34 @@ public class TankFrame2 extends Frame {
                     break;
             }
             setMainTankDri();
-//            上 下 左 右 上左 上右 下左 下右
-//            if (BU == true && BD == false && BL == false && BR == false) {
-//                y -= 10;
-//            } else if (BU == false && BD == true && BL == false && BR == false) {
-//                y += 10;
-//            } else if (BU == false && BD == false && BL == true && BR == false) {
-//                x -= 10;
-//            } else if (BU == false && BD == false && BL == false && BR == true) {
-//                x += 10;
-//            } else if (BU == true && BD == false && BL == true && BR == false) {
-//                y -= 10;
-//                x -= 10;
-//            } else if (BU == true && BD == false && BL == false && BR == true) {
-//                y -= 10;
-//                x += 10;
-//            } else if (BU == false && BD == true && BL == true && BR == false) {
-//                y += 10;
-//                x -= 10;
-//            } else if (BU == false && BD == true && BL == false && BR == true) {
-//                y += 10;
-//                x += 10;
-//            }
-            repaint();// 调用 paint()方法
+//            repaint();// 调用 paint()方法
         }
 
         // 一个键抬起来的时候调用
         @Override
         public void keyReleased(KeyEvent e) {
-            setMainTankDri();
+            myTank.setMoving(false);
 //          抬起来的时候设置回来
-            BL = false;
-            BR = false;
-            BU = false;
-            BD = false;
+            int key = e.getKeyCode();
+            switch (key) {
+                case KeyEvent.VK_UP: // 上
+                    BU = false;
+                    break;
+                case KeyEvent.VK_DOWN: // 下
+                    BD = false;
+                    break;
+                case KeyEvent.VK_LEFT: // 左
+                    BL = false;
+                    break;
+                case KeyEvent.VK_RIGHT:// 右
+                    BR = false;
+                    break;
+                case KeyEvent.VK_CONTROL:// 抬起ctrl键打出一个子弹
+                    myTank.fire();
+                    break;
+                default:
+                    break;
+            }
         }
 
         // 设置坦克的方向
@@ -113,12 +122,39 @@ public class TankFrame2 extends Frame {
         }
     }
 
-    //    窗口重新调用的时候自动调用 paint 方法 重写方法 paint
+    // 用双缓冲的方法解决闪烁的问题
+    Image offScreenImage = null;
+
+    @Override
+    public void update(Graphics g) { // paint方法之前调用
+        if (offScreenImage == null) {
+            offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
+        }
+        Graphics gOffSvreen = offScreenImage.getGraphics();
+        Color c = gOffSvreen.getColor();
+        gOffSvreen.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        gOffSvreen.setColor(c);
+        paint(gOffSvreen);
+        g.drawImage(offScreenImage, 0, 0, null);
+    }
+
+    // 窗口重新调用的时候自动调用 paint 方法 重写方法 paint
     @Override
     public void paint(Graphics g) {
-//      画坦克
+        // 子弹描述
+        Color c = g.getColor();
+        g.setColor(Color.white);
+        g.drawString("子弹的数量:" + bullets.size(), 10, 60);
+        g.setColor(c);
+        // 画坦克
         myTank.paint(g);
-//      画子弹
-        b.paint(g);
+        // 画子弹
+//        for (Bullet b : bullets) {
+//            b.paint(g);
+//        } // 出现异常
+        for (int i = 0; i < bullets.size(); i++) {
+            bullets.get(i).paint(g);
+        }
     }
+
 }

@@ -3,10 +3,21 @@ package com.oracle;
 import java.awt.*;
 
 // 坦克类
+/*
+ * 坦克的移动速度
+ * 坦克的位置
+ * 坦克的大小
+ * 坦克的方向
+ *
+ * */
 public class Tank {
     private int x, y;
     private Dir dir = Dir.DOWN;
-    private static final int SPEED = 10;
+    private static final int SPEED = 5;
+    private static final int WIDTH = 50, HEIGHT = 50;
+    //    坦克类持有子弹类的引用
+    private TankFrame2 tankframe2 = null;
+    private boolean moving = false;
 
     public boolean isMoving() {
         return moving;
@@ -15,8 +26,6 @@ public class Tank {
     public void setMoving(boolean moving) {
         this.moving = moving;
     }
-
-    private boolean moving = false;
 
     public Dir getDir() {
         return dir;
@@ -27,18 +36,41 @@ public class Tank {
     }
 
     //构造方法
-    public Tank(int x, int y, Dir dir) {
+    public Tank(int x, int y, Dir dir, TankFrame2 tankframe2) {
         this.x = x;
         this.y = y;
         this.dir = dir;
+        this.tankframe2 = tankframe2;
     }
-// 画坦克的方法
+
+    // 画坦克的方法
     public void paint(Graphics g) {
-        g.fillRect(x, y, 50, 50);
+//        Color c = g.getColor();
+//        g.setColor(Color.yellow);
+//        g.fillRect(x, y, WIDTH, HEIGHT);
+//        g.setColor(c);
+//        改为画图片
+//        g.drawImage(ResourceManager.tankU, x, y, null);
+        switch (dir) {
+            case UP:
+                g.drawImage(ResourceManager.tankU, x, y, null);
+                break;
+            case DOWN:
+                g.drawImage(ResourceManager.tankD, x, y, null);
+                break;
+            case LEFT:
+                g.drawImage(ResourceManager.tankL, x, y, null);
+                break;
+            case RIGHT:
+                g.drawImage(ResourceManager.tankR, x, y, null);
+            default:
+                break;
+        }
         move();
     }
+
     private void move() {
-        if(!moving) return;
+        if (!moving) return;
         switch (dir) {
             case LEFT:
                 x -= SPEED;
@@ -55,5 +87,10 @@ public class Tank {
             default:
                 break;
         }
+    }
+
+    // 抬起ctrl键发射一个子弹
+    public void fire() {
+        tankframe2.bullets.add(new Bullet(this.x, this.y, this.dir, this.tankframe2));
     }
 }
