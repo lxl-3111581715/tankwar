@@ -9,56 +9,46 @@ import java.util.ArrayList;
 
 // 显示窗口的第二种方法
 /*
- * 窗口的属性
- *   大小
- *   能否改变
- *   标题
- *   是否可关闭
- * 键盘按下
- * 键盘松开
- * 窗口画东西
- *   出现坦克
- *   出现子弹
- *   按下ctrl键 打出子弹
+ * 窗口的属性 大小 能否改变 标题 是否可关闭 键盘按下 键盘松开 窗口画东西 出现坦克 出现子弹 按下ctrl键 打出子弹
  * */
 public class TankFrame2 extends Frame {
-    //    窗口的大小
+    // 窗口的大小
     int GAME_WIDTH = 800, GAME_HEIGHT = 600;
-    //    主站坦克
-    Tank myTank = new Tank(200, 400, Dir.DOWN, this);
+    // 主站坦克
+    Tank myTank = new Tank(200, 400, Dir.DOWN, Group.GOOD, this);
+    // 子弹集合
     ArrayList<Bullet> bullets = new ArrayList<>();
+    // 敌方坦克集合
     ArrayList<Tank> tanks = new ArrayList<>(); // 创建敌方坦克
+    // 显示一个爆炸
+    explode e = new explode(100, 100, this);
+    // 爆炸集合  屏幕可能有多个爆炸
 
-    //    Bullet b = new Bullet(300, 300, Dir.DOWN);
-    //    构造方法
+    // 构造方法
     public TankFrame2() {
-//      窗口设置大小
+        // 窗口设置大小
         setSize(GAME_WIDTH, GAME_HEIGHT);
-//      设置不能改变大小
+        // 设置不能改变大小
         setResizable(false);
-//      设置窗口的标题
+        // 设置窗口的标题
         setTitle("tank war");
-//      显示窗口
+        // 显示窗口
         setVisible(true);
-//      设置窗口可关闭
+        // 设置窗口可关闭
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         });
-//        设置键盘监听
+        // 设置键盘监听
         this.addKeyListener(new MyKeyListener());
     }
 
-    //    键盘监听处理内部类
+    // 键盘监听处理内部类
     class MyKeyListener extends KeyAdapter {
-        //  设置给四个方向设置布尔值 根据布尔值来给xy设置值  坦克可以八个方向移动
-        boolean BL = false;
-        boolean BR = false;
-        boolean BU = false;
-        boolean BD = false;
-
+        //  设置给四个方向设置布尔值 根据布尔值来给xy设置值  坦克可以四个方向移动
+        boolean BL = false, BR = false, BU = false, BD = false;
         // 一个键被按下去的时候调用
         @Override
         public void keyPressed(KeyEvent e) {
@@ -125,7 +115,6 @@ public class TankFrame2 extends Frame {
 
     // 用双缓冲的方法解决闪烁的问题
     Image offScreenImage = null;
-
     @Override
     public void update(Graphics g) { // paint方法之前调用
         if (offScreenImage == null) {
@@ -151,24 +140,24 @@ public class TankFrame2 extends Frame {
         // 画坦克
         myTank.paint(g);
         // 画子弹
-//        for (Bullet b : bullets) {
-//            b.paint(g);
-//        } // 出现异常
+        //        for (Bullet b : bullets) {
+        //            b.paint(g);
+        //        } // 出现异常
+        // 画子弹
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).paint(g);
         }
-//        画地方坦克
+        // 画敌方坦克
         for (int i = 0; i < tanks.size(); i++) {
             tanks.get(i).paint(g);
         }
-//        碰撞检测
+        // 碰撞检测
         for (int i = 0; i < bullets.size(); i++) {
             for (int j = 0; j < tanks.size(); j++) {
                 bullets.get(i).collwith(tanks.get(j));
-
             }
         }
-
+//        画爆炸
+        e.paint(g);
     }
-
 }
